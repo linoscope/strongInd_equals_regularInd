@@ -1,27 +1,14 @@
 
+
 Definition Regular_Induction := forall P, (P(0) /\ (forall k, P(k) -> P(S k)))
                                             -> (forall n, P(n)).
 Definition Strong_Induction := forall P, (P(0) /\
-                                         (forall k,
-                                             (forall m, m <= k -> P(m)) -> P(S k)))
+                                         (forall k, (forall m, m <= k -> P(m)) -> P(S k)))
                                             -> (forall n, P(n)).
 
-Theorem strong_implies_regular: Strong_Induction -> Regular_Induction.
-Proof.
-  unfold Strong_Induction.  unfold Regular_Induction.
-  intros SI P H.
-  apply SI.
-  split.
-  - destruct H. apply H.
-  - intro k. intro A.
-    destruct H.  apply H0. apply A. auto.
-Qed.
-
 Definition Generalized_Strong_Induction := forall P, P(0) /\
-                                                     (forall k,
-                                                         (forall m, m <= k -> P(m)) -> P(S k))
+                                                     (forall k, (forall m, m <= k -> P(m)) -> P(S k))
                                                      -> forall n m, m <= n -> P(m).
-
 
 
 Lemma regular_implies_generalized_strong:
@@ -45,11 +32,29 @@ Lemma generalized_strong_implies_strong:
   specialize (H1 n). specialize (H1 n).  apply H1. constructor.
 Qed.
 
-Theorem regular_implies_strong:
+Lemma regular_implies_strong:
   Regular_Induction -> Strong_Induction.
 Proof.
   intro H.
   apply generalized_strong_implies_strong.
   apply regular_implies_generalized_strong.
   assumption.
+Qed.
+
+
+Lemma strong_implies_regular: Strong_Induction -> Regular_Induction.
+Proof.
+  unfold Strong_Induction.  unfold Regular_Induction.
+  intros SI P H.
+  apply SI.
+  split.
+  - destruct H. apply H.
+  - intro k. intro A.
+    destruct H.  apply H0. apply A. auto.
+Qed.
+
+Theorem strong_equals_regular: Strong_Induction <-> Regular_Induction.
+  split.
+  apply strong_implies_regular.
+  apply regular_implies_strong.
 Qed.
