@@ -1,0 +1,2 @@
+# strongInd_equals_regularInd
+完全帰納法が（普通の）数学的帰納法と同値であることの証明
